@@ -1,0 +1,59 @@
+const int buttonPin = 2;      // Button pin
+const int relayPin = 7;       // Relay control pin
+const int engineSimulatorPin = 13; // LED to simulate engine status
+
+// Variables to store the state of the engine
+boolean engineRunning = false;
+
+void setup() {
+  // Initialize the button pin as an input
+  pinMode(buttonPin, INPUT_PULLUP);
+  
+  // Initialize the relay pin as an output
+  pinMode(relayPin, OUTPUT);
+  
+  // Initialize the engine simulator LED pin as an output
+  pinMode(engineSimulatorPin, OUTPUT);
+  
+  // By default, the engine is off
+  digitalWrite(relayPin, LOW);
+  digitalWrite(engineSimulatorPin, LOW);
+  
+  // Start with the engine locked
+  lockEngine();
+}
+
+void loop() {
+  // Read the state of the button
+  int buttonState = digitalRead(buttonPin);
+
+  // Check if the button is pressed (LOW)
+  if (buttonState == LOW) {
+    if (engineRunning) {
+      // If the engine is running, turn it off (lock the engine)
+      lockEngine();
+    } else {
+      // If the engine is off, start it (unlock the engine)
+      unlockEngine();
+    }
+    // Delay to debounce the button
+    delay(1000);
+  }
+}
+
+// Function to lock the engine
+void lockEngine() {
+  digitalWrite(relayPin, LOW);           // Turn off the relay
+  digitalWrite(engineSimulatorPin, LOW); // Turn off the engine simulator LED
+  engineRunning = false;
+  Serial.println("Engine locked.");
+}
+
+// Function to unlock the engine
+void unlockEngine() {
+  digitalWrite(relayPin, HIGH);          // Turn on the relay
+  digitalWrite(engineSimulatorPin, HIGH); // Turn on the engine simulator LED
+  engineRunning = true;
+  Serial.println("Engine unlocked.");
+}
+//This code sets up a simple engine locking system using an Arduino. 
